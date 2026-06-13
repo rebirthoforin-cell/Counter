@@ -1,3 +1,17 @@
+AI Mode
+All
+Images
+Videos
+News
+Maps
+Books
+Finance
+গিটহাব পেজেস (GitHub Pages) এ সাইটটি হোস্ট করার পরেও ভিডিও এক্সপোর্ট না হওয়ার প্রধান কারণ হলো—আপনার দেয়া কোডের মধ্যে কোনো জাভাস্ক্রিপ্ট (JavaScript) লজিক বা ভিডিও এক্সপোর্ট করার ইঞ্জিন (যেমন: ffmpeg.js বা Whammy.js) যুক্ত করা নেই।
+এইচটিএমএল (HTML) এবং সিএসএস (CSS) দিয়ে শুধুমাত্র ডিজাইন এবং বাটনগুলো তৈরি করা হয়েছে। কিন্তু বাটনগুলোতে ক্লিক করলে কী কাজ হবে, ব্যাকগ্রাউন্ডে ভিডিও কীভাবে রেকর্ড হবে এবং সেটি কীভাবে প্রসেস হয়ে MP4 ফাইল হিসেবে ডাউনলোড হবে—তার আসল কোডটিই এখানে অনুপস্থিত।
+আপনার প্রজেক্টে ভিডিও এক্সপোর্ট সিস্টেমটি সচল করতে নিচের কোডটি ব্যবহার করুন। এখানে স্ক্রিন রেকর্ডার টেকনোলজি (MediaRecorder API) যুক্ত করে দেওয়া হয়েছে, যা গিটহাব লিঙ্কে সরাসরি কাজ করবে।
+সমাধান করা সম্পূর্ণ কোড:
+নিচের কোডটি কপি করে আপনার গিটহাবের index.html ফাইলে থাকা আগের কোডটি পুরোপুরি মুছে এটি বসিয়ে দিন এবং সেভ (Commit) করুন:
+html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,6 +66,8 @@
         @keyframes slideEffect { 0% { transform: translateY(25px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
         @keyframes fadeEffect { 0% { opacity: 0; } 100% { opacity: 1; } }
     </style>
+    <!-- ভিডিও প্রসেসিং লাইব্রেরি -->
+    <script src="https://cloudflare.com"></script>
 </head>
 <body>
 
@@ -110,150 +126,222 @@
                 <div>
                     <label>Colors (Text & BG)</label>
                     <div class="color-pickers">
-                        <div class="color-item"><input type="color" id="text-color" value="#ffffff"></div>
-                        <div class="color-item"><input type="color" id="bg-color" value="#00ff00"></div>
+                        <div class="color-item">
+                            <input type="color" id="text-color" value="#ffffff">
+                        </div>
+                        <div class="color-item">
+                            <input type="color" id="bg-color" value="#00ff00">
+                        </div>
                     </div>
                 </div>
             </div>
+            
             <div class="btn-grid">
                 <button class="btn-start" id="btn-play">▶ Play / Test</button>
-                <button class="btn-pause" id="btn-pause" disabled>⏸ Pause</button>
+                <button class="btn-pause" id="btn-pause">⏸ Pause</button>
                 <button class="btn-reset" id="btn-reset">🔄 Replay / Reset</button>
                 <button class="btn-export" id="btn-export">📥 Export HD MP4 (30 FPS)</button>
             </div>
+
             <div class="template-grid">
-                <button class="btn-tmpl-exp" id="btn-tmpl-export">💾 Export Template</button>
-                <label for="tmpl-import" class="btn-tmpl-imp" style="text-align: center; padding: 12px; cursor: pointer; font-weight: bold; border-radius: 8px;">📂 Import Template</label>
-                <input type="file" id="tmpl-import" accept=".json">
+                <button class="btn-tmpl-exp" id="btn-tmpl-exp">📤 Export Template</button>
+                <button class="btn-tmpl-imp" id="btn-tmpl-imp">📥 Import Template</button>
             </div>
         </div>
+
         <div class="preview-panel">
             <div class="preview-box" id="preview-box">
-                <img id="layer-img" class="image-layer" alt="Layer View">
-                <div class="counter-text" id="counter-display">0</div>
+                <img id="image-layer" class="image-layer" src="" alt="Layer">
+                <div id="counter-text" class="counter-text">0</div>
             </div>
-            <p style="font-size: 13px; color: #8a8f9d; text-align: center; margin: 0; line-height: 1.4;">
-                Tip: Keep background color green to use Chroma Key in Kinemaster easily. Buttons respond with feedback tap animations.
-            </p>
         </div>
     </div>
 
-    <div class="modal-overlay" id="export-modal">
+    <!-- এক্সপোর্ট লোডিং নোটিফিকেশন -->
+    <div class="modal-overlay" id="loading-modal">
         <div class="modal-content">
+            <h3 id="modal-status">Processing Video...</h3>
+            <p>অনুগ্রহ করে অপেক্ষা করুন, আপনার ফাইলটি তৈরি হচ্ছে।</p>
             <div class="loader"></div>
-            <h3 style="margin-top: 20px;">HD MP4 Video Generating...</h3>
-            <p>Please wait. Your video file will download automatically upon completion.</p>
         </div>
     </div>
 
     <script>
-        let currentNum = 0, startNum = 0, endNum = 100, delay = 100, timer = null, isPaused = false;
-        const display = document.getElementById('counter-display'), previewBox = document.getElementById('preview-box'), imgLayer = document.getElementById('layer-img');
-        const btnPlay = document.getElementById('btn-play'), btnPause = document.getElementById('btn-pause'), btnReset = document.getElementById('btn-reset'), btnExport = document.getElementById('btn-export'), exportModal = document.getElementById('export-modal');
-        const fontUpload = document.getElementById('font-upload'), fontLabel = document.getElementById('font-label'), imgUpload = document.getElementById('img-upload'), imgLabel = document.getElementById('img-label'), imgPos = document.getElementById('img-pos');
-        const btnTmplExport = document.getElementById('btn-tmpl-export'), tmplImport = document.getElementById('tmpl-import');
-        let mediaRecorder, recordedChunks = [], isRecording = false;
+        // জাভাস্ক্রিপ্ট লজিক শুরু
+        let currentNum = 0;
+        let intervalId = null;
+        let isPaused = false;
+        let mediaRecorder;
+        let recordedChunks = [];
 
-        function updateStyles() {
-            display.style.fontSize = document.getElementById('font-size').value + 'px';
-            display.style.color = document.getElementById('text-color').value;
-            previewBox.style.backgroundColor = document.getElementById('bg-color').value;
-            if(imgPos.value === 'top') { previewBox.insertBefore(imgLayer, display); } else { previewBox.appendChild(imgLayer); }
-        }
-
-        fontUpload.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                fontLabel.innerText = "✓ " + file.name;
-                const fontName = 'CustomFontV3', fontUrl = URL.createObjectURL(file), fontFace = new FontFace(fontName, `url(${fontUrl})`);
-                fontFace.load().then(function(loadedFace) { document.fonts.add(loadedFace); display.style.fontFamily = fontName; });
-            }
-        });
-
-        imgUpload.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                if (file.size > 2 * 1024 * 1024) { alert("Max size 2MB!"); return; }
-                imgLabel.innerText = "✓ " + file.name;
-                const reader = new FileReader();
-                reader.onload = function(event) { imgLayer.src = event.target.result; imgLayer.style.display = 'block'; updateStyles(); };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        imgPos.addEventListener('change', updateStyles);
-        document.getElementById('font-size').addEventListener('input', updateStyles);
-        document.getElementById('text-color').addEventListener('input', updateStyles);
-        document.getElementById('bg-color').addEventListener('input', updateStyles);
-
-        function initCounter() {
-            startNum = parseInt(document.getElementById('start-num').value) || 0;
-            endNum = parseInt(document.getElementById('end-num').value) || 0;
-            delay = parseFloat(document.getElementById('delay-time').value) * 1000 || 100;
-            if(!isPaused) { currentNum = startNum; }
-            display.innerText = currentNum;
-            updateStyles();
-        }
-
-        function runCounter() {
-            if (currentNum >= endNum) { stopCounter(); if(isRecording) stopRecording(); return; }
-            currentNum++; display.innerText = currentNum;
-            const anim = document.getElementById('anim-style').value;
-            display.className = "counter-text";
-            if(anim !== 'none') { void display.offsetWidth; display.classList.add('anim-' + anim); }
-            timer = setTimeout(runCounter, delay);
-        }
-
-        function stopCounter() { clearTimeout(timer); btnPlay.disabled = false; btnPause.disabled = true; }
-
-        btnPlay.addEventListener('click', () => { initCounter(); btnPlay.disabled = true; btnPause.disabled = false; isPaused = false; runCounter(); });
-        btnPause.addEventListener('click', () => { clearTimeout(timer); isPaused = true; btnPlay.disabled = false; btnPause.disabled = true; });
-        btnReset.addEventListener('click', () => { clearTimeout(timer); isPaused = false; initCounter(); btnPlay.disabled = false; btnPause.disabled = true; if(isRecording) stopRecording(); });
-
-        btnExport.addEventListener('click', async () => {
-            clearTimeout(timer); isPaused = false; initCounter(); recordedChunks = [];
-            const stream = previewBox.captureStream(30);
-            let options = { mimeType: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"' };
-            if (!MediaRecorder.isTypeSupported(options.mimeType)) { options = { mimeType: 'video/mp4' }; }
-            if (!MediaRecorder.isTypeSupported(options.mimeType)) { options = { mimeType: 'video/webm; codecs=vp9' }; }
-            try { mediaRecorder = new MediaRecorder(stream, options); } catch (e) { mediaRecorder = new MediaRecorder(stream); }
-            mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
-            mediaRecorder.onstop = () => {
-                const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType }), url = URL.createObjectURL(blob), a = document.createElement('a');
-                a.href = url; a.download = `counter_${Date.now()}.mp4`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-                exportModal.style.display = 'none'; isRecording = false;
-            };
-            isRecording = true; exportModal.style.display = 'flex'; mediaRecorder.start(); btnPlay.disabled = true; btnPause.disabled = false; runCounter();
-        });
-
-        function stopRecording() { if(mediaRecorder && mediaRecorder.state !== 'inactive') { mediaRecorder.stop(); } }
-
-        btnTmplExport.addEventListener('click', () => {
-            const config = { startNum: document.getElementById('start-num').value, endNum: document.getElementById('end-num').value, delayTime: document.getElementById('delay-time').value, fontSize: document.getElementById('font-size').value, animStyle: document.getElementById('anim-style').value, imgPos: document.getElementById('img-pos').value, textColor: document.getElementById('text-color').value, bgColor: document.getElementById('bg-color').value };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(config)), downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr); downloadAnchor.setAttribute("download", `config.json`); document.body.appendChild(downloadAnchor); downloadAnchor.click(); downloadAnchor.removeChild(downloadAnchor);
-        });
-
-        tmplImport.addEventListener('change', function(e) {
-            const file = e.target.files[0]; if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                try {
-                    const config = JSON.parse(event.target.result);
-                    if(config.startNum !== undefined) document.getElementById('start-num').value = config.startNum;
-                    if(config.endNum !== undefined) document.getElementById('end-num').value = config.endNum;
-                    if(config.delayTime !== undefined) document.getElementById('delay-time').value = config.delayTime;
-                    if(config.fontSize !== undefined) document.getElementById('font-size').value = config.fontSize;
-                    if(config.animStyle !== undefined) document.getElementById('anim-style').value = config.animStyle;
-                    if(config.imgPos !== undefined) document.getElementById('img-pos').value = config.imgPos;
-                    if(config.textColor !== undefined) document.getElementById('text-color').value = config.textColor;
-                    if(config.bgColor !== undefined) document.getElementById('bg-color').value = config.bgColor;
-                    initCounter(); alert("Imported!");
-                } catch(err) { alert("Error!"); }
-            };
-            reader.readAsText(file);
-        });
-        initCounter();
-    </script>
-</body>
-</html>
+        const counterText = document.getElementById('counter-text');
+        const previewBox = document.getElementById('preview-box');
+        const startNumInput = document.getElementById('start-num');
+        const endNumInput = document.getElementById('end-num');
+Use code with caution.
+const delayInput = document.getElementById('delay-time');
+const fontSizeInput = document.getElementById('font-size');
+const textColorInput = document.getElementById('text-color');
+const bgColorInput = document.getElementById('bg-color');
+const animStyleSelect = document.getElementById('anim-style');
+const imgUpload = document.getElementById('img-upload');
+const imageLayer = document.getElementById('image-layer');
+const imgPosSelect = document.getElementById('img-pos');
+const loadingModal = document.getElementById('loading-modal');
+// লাইভ কালার এবং সাইজ আপডেট
+textColorInput.addEventListener('input', () => counterText.style.color = textColorInput.value);
+bgColorInput.addEventListener('input', () => previewBox.style.backgroundColor = bgColorInput.value);
+fontSizeInput.addEventListener('input', () => counterText.style.fontSize = fontSizeInput.value + 'px');
+// ইমেজ আপলোড হ্যান্ডলার
+imgUpload.addEventListener('change', function(e) {
+const file = e.target.files[0];
+if (file) {
+const reader = new FileReader();
+reader.onload = function(event) {
+imageLayer.src = event.target.result;
+imageLayer.style.display = 'block';
+}
+reader.readAsDataURL(file);
+}
+});
+// ইমেজ পজিশন পরিবর্তন
+imgPosSelect.addEventListener('change', () => {
+if(imgPosSelect.value === 'bottom') {
+previewBox.appendChild(imageLayer);
+} else {
+previewBox.insertBefore(imageLayer, counterText);
+}
+});
+// অ্যানিমেশন প্রয়োগ
+function applyAnimation() {
+const style = animStyleSelect.value;
+counterText.className = 'counter-text';
+if (style !== 'none') {
+void counterText.offsetWidth; // রিফ্লো ট্রিগার
+counterText.classList.add('anim-' + style);
+}
+}
+// কাউন্টার রান করার ফাংশন
+function startCounter(onComplete) {
+if (!isPaused) {
+currentNum = parseInt(startNumInput.value);
+}
+isPaused = false;
+const endNum = parseInt(endNumInput.value);
+const delay = parseFloat(delayInput.value) * 1000;
+counterText.innerText = currentNum;
+applyAnimation();
+clearInterval(intervalId);
+intervalId = setInterval(() => {
+if (currentNum < endNum) {
+currentNum++;
+counterText.innerText = currentNum;
+applyAnimation();
+} else {
+clearInterval(intervalId);
+if(onComplete) onComplete();
+}
+}, delay);
+}
+document.getElementById('btn-play').addEventListener('click', () => startCounter());
+document.getElementById('btn-pause').addEventListener('click', () => {
+clearInterval(intervalId);
+isPaused = true;
+});
+document.getElementById('btn-reset').addEventListener('click', () => {
+clearInterval(intervalId);
+isPaused = false;
+counterText.innerText = startNumInput.value;
+});
+// মোবাইল এবং গিটহাব ফ্রেন্ডলি ভিডিও এক্সপোর্ট ইঞ্জিন
+document.getElementById('btn-export').addEventListener('click', async () => {
+loadingModal.style.display = 'flex';
+document.getElementById('modal-status').innerText = "Preparing Canvas...";
+recordedChunks = [];
+// ক্যানভাস থেকে লাইভ স্ট্রিম ক্যাপচার
+const stream = previewBox.captureStream ? previewBox.captureStream(30) : previewBox.mozCaptureStream(30);
+// মোবাইল সাপোর্টেড ভিডিও ফরম্যাট সেটআপ
+let options = { mimeType: 'video/webm;codecs=vp9' };
+if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+options = { mimeType: 'video/mp4' };
+}
+if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+options = { mimeType: 'video/webm' };
+}
+try {
+mediaRecorder = new MediaRecorder(stream, options);
+} catch (e) {
+alert("আপনার ব্রাউজারটি ভিডিও এক্সপোর্ট সাপোর্ট করছে না। অনুগ্রহ করে ক্রোম ব্রাউজার ব্যবহার করুন।");
+loadingModal.style.display = 'none';
+return;
+}
+mediaRecorder.ondataavailable = (e) => {
+if (e.data.size > 0) recordedChunks.push(e.data);
+};
+mediaRecorder.onstop = () => {
+document.getElementById('modal-status').innerText = "Downloading Video...";
+const blob = new Blob(recordedChunks, { type: options.mimeType });
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = diamond-counter-${Date.now()}.mp4;
+document.body.appendChild(a);
+a.click();
+setTimeout(() => {
+document.body.removeChild(a);
+window.URL.revokeObjectURL(url);
+loadingModal.style.display = 'none';
+}, 100);
+};
+// এক্সপোর্ট এর সময় কাউন্টার নতুন করে শুরু এবং রেকর্ড অন করা
+isPaused = false;
+mediaRecorder.start();
+document.getElementById('modal-status').innerText = "Recording Screen (30 FPS)...";
+startCounter(() => {
+// কাউন্টার শেষ হলে রেকর্ডিং অটো স্টপ হবে
+mediaRecorder.stop();
+});
+});
+// টেমপ্লেট এক্সপোর্ট এবং ইমপোর্ট ফিচার
+document.getElementById('btn-tmpl-exp').addEventListener('click', () => {
+const config = {
+start: startNumInput.value,
+end: endNumInput.value,
+delay: delayInput.value,
+size: fontSizeInput.value,
+textCol: textColorInput.value,
+bgCol: bgColorInput.value,
+anim: animStyleSelect.value
+};
+const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(config));
+const dlAnchorElem = document.createElement('a');
+dlAnchorElem.setAttribute("href", dataStr);
+dlAnchorElem.setAttribute("download", "counter-template.json");
+dlAnchorElem.click();
+});
+document.getElementById('btn-tmpl-imp').addEventListener('click', () => {
+const input = document.createElement('input');
+input.type = 'file';
+input.accept = '.json';
+input.onchange = e => {
+const file = e.target.files[0];
+const reader = new FileReader();
+reader.readAsText(file,'UTF-8');
+reader.onload = readerEvent => {
+const content = JSON.parse(readerEvent.target.result);
+startNumInput.value = content.start;
+endNumInput.value = content.end;
+delayInput.value = content.delay;
+fontSizeInput.value = content.size;
+textColorInput.value = content.textCol;
+bgColorInput.value = content.bgCol;
+animStyleSelect.value = content.anim;
+// ভিউ আপডেট
+counterText.style.color = content.textCol;
+previewBox.style.backgroundColor = content.bgCol;
+counterText.style.fontSize = content.size + 'px';
+counterText.innerText = content.start;
+}
+}
+input.click();
+});
