@@ -1,5 +1,4 @@
-# Generating the completely English version to eliminate square box font issues on the user's phone.
-html_content_english = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,63 +9,41 @@ html_content_english = """<!DOCTYPE html>
         body { margin: 0; padding: 20px; background-color: #0f111a; color: #fff; display: flex; flex-direction: column; align-items: center; }
         h1 { margin-bottom: 20px; color: #00ffaa; font-size: 24px; text-shadow: 0 0 10px rgba(0,255,170,0.2); text-align: center; }
         .container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%; max-width: 1200px; }
-        
-        /* Control Panel */
         .control-panel { flex: 1; min-width: 320px; max-width: 450px; background: #161925; padding: 20px; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #25293c; height: fit-content; }
         .preview-panel { flex: 1.3; min-width: 360px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        
-        /* Preview Box */
         .preview-box { width: 100%; aspect-ratio: 16/9; background-color: #00ff00; border-radius: 14px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
         .counter-text { font-size: 90px; color: #ffffff; white-space: nowrap; transition: none; line-height: 1; z-index: 2; }
-        
-        /* Image Layer */
         .image-layer { max-width: 35%; max-height: 35%; object-fit: contain; z-index: 1; display: none; margin: 10px; }
-        
-        /* Form Layouts */
         .form-group { margin-bottom: 14px; }
         .form-group.row { display: flex; gap: 10px; }
         .form-group.row > div { flex: 1; }
         label { display: block; font-size: 13px; color: #a0a5c0; margin-bottom: 6px; font-weight: 600; }
         input[type="number"], input[type="text"], select { width: 100%; padding: 10px; background: #0b0d16; border: 1px solid #2e344d; border-radius: 8px; color: #fff; font-size: 14px; outline: none; }
         input[type="number"]:focus, select:focus { border-color: #00ffaa; }
-        
         .color-pickers { display: flex; gap: 15px; }
         .color-item { flex: 1; display: flex; align-items: center; gap: 8px; background: #0b0d16; padding: 6px 10px; border-radius: 8px; border: 1px solid #2e344d; }
         input[type="color"] { border: none; background: transparent; width: 35px; height: 30px; cursor: pointer; }
-        
-        /* File Buttons */
         .file-row { display: flex; gap: 10px; margin-bottom: 14px; }
         .file-row > div { flex: 1; }
         .file-upload-btn { display: block; text-align: center; background: #1f2336; border: 1px dashed #444b6e; padding: 10px 5px; border-radius: 8px; cursor: pointer; font-size: 12px; color: #00ffaa; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .file-upload-btn:hover { background: #282d46; }
         input[type="file"] { display: none; }
-        
-        /* Buttons Settings */
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         button { padding: 12px; font-size: 14px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: transform 0.1s ease, filter 0.1s ease; }
-        
-        /* Shrink & Darken Effect on Tap/Click */
         button:active { transform: scale(0.94); filter: brightness(0.70); }
-        
         .btn-start { background: #00ffaa; color: #0b0d16; }
         .btn-pause { background: #ffb700; color: #0b0d16; }
         .btn-reset { background: #ff3860; color: #fff; }
         .btn-export { background: #00bfff; color: #fff; grid-column: span 2; font-size: 15px; }
-        
         .template-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #25293c; }
         .btn-tmpl-exp { background: #6c5ce7; color: #fff; }
         .btn-tmpl-imp { background: #a29bfe; color: #0b0d16; }
-        
-        /* Modal Window */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 9999; }
         .modal-content { background: #161925; padding: 30px; border-radius: 16px; border: 1px solid #00bfff; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 0 30px rgba(0,191,255,0.3); }
         .modal-content h3 { color: #00bfff; margin-top: 0; margin-bottom: 10px; }
         .modal-content p { color: #a0a5c0; font-size: 14px; margin-bottom: 20px; }
-        
         .loader { width: 50px; height: 50px; border: 5px solid #1f2336; border-top: 5px solid #00bfff; border-radius: 50%; margin: 0 auto; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        /* Counter FX */
         .anim-none { animation: none; }
         .anim-pop { animation: popEffect 0.12s ease-out; }
         .anim-slide { animation: slideEffect 0.15s ease-out; }
@@ -79,7 +56,6 @@ html_content_english = """<!DOCTYPE html>
 <body>
 
     <h1>🎬 Diamond Counter Screen Generator (HD MP4 Edition)</h1>
-    
     <div class="container">
         <div class="control-panel">
             <div class="form-group row">
@@ -92,7 +68,6 @@ html_content_english = """<!DOCTYPE html>
                     <input type="number" id="end-num" value="100">
                 </div>
             </div>
-            
             <div class="form-group row">
                 <div>
                     <label>Delay Time (Seconds)</label>
@@ -103,7 +78,6 @@ html_content_english = """<!DOCTYPE html>
                     <input type="number" id="font-size" value="90" min="10">
                 </div>
             </div>
-            
             <div class="form-group">
                 <label>Animation Style</label>
                 <select id="anim-style">
@@ -113,7 +87,6 @@ html_content_english = """<!DOCTYPE html>
                     <option value="fade">Fade In</option>
                 </select>
             </div>
-            
             <div class="file-row">
                 <div>
                     <label>Custom Font (.ttf/.otf)</label>
@@ -126,7 +99,6 @@ html_content_english = """<!DOCTYPE html>
                     <input type="file" id="img-upload" accept="image/*">
                 </div>
             </div>
-
             <div class="form-group row">
                 <div>
                     <label>Image Position</label>
@@ -138,30 +110,23 @@ html_content_english = """<!DOCTYPE html>
                 <div>
                     <label>Colors (Text & BG)</label>
                     <div class="color-pickers">
-                        <div class="color-item">
-                            <input type="color" id="text-color" value="#ffffff">
-                        </div>
-                        <div class="color-item">
-                            <input type="color" id="bg-color" value="#00ff00">
-                        </div>
+                        <div class="color-item"><input type="color" id="text-color" value="#ffffff"></div>
+                        <div class="color-item"><input type="color" id="bg-color" value="#00ff00"></div>
                     </div>
                 </div>
             </div>
-            
             <div class="btn-grid">
                 <button class="btn-start" id="btn-play">▶ Play / Test</button>
                 <button class="btn-pause" id="btn-pause" disabled>⏸ Pause</button>
                 <button class="btn-reset" id="btn-reset">🔄 Replay / Reset</button>
                 <button class="btn-export" id="btn-export">📥 Export HD MP4 (30 FPS)</button>
             </div>
-
             <div class="template-grid">
-                <button class="btn-tmpl-exp" id="btn-tmpl-export" title="Save your configuration data">💾 Export Template</button>
-                <label for="tmpl-import" class="btn-tmpl-imp" style="text-align: center; padding: 12px; cursor: pointer; font-weight: bold; border-radius: 8px;" title="Load your saved layout config">📂 Import Template</label>
+                <button class="btn-tmpl-exp" id="btn-tmpl-export">💾 Export Template</button>
+                <label for="tmpl-import" class="btn-tmpl-imp" style="text-align: center; padding: 12px; cursor: pointer; font-weight: bold; border-radius: 8px;">📂 Import Template</label>
                 <input type="file" id="tmpl-import" accept=".json">
             </div>
         </div>
-        
         <div class="preview-panel">
             <div class="preview-box" id="preview-box">
                 <img id="layer-img" class="image-layer" alt="Layer View">
@@ -177,80 +142,41 @@ html_content_english = """<!DOCTYPE html>
         <div class="modal-content">
             <div class="loader"></div>
             <h3 style="margin-top: 20px;">HD MP4 Video Generating...</h3>
-            <p>Please wait. The application is recording the canvas frames directly. Your video file will download automatically upon completion.</p>
+            <p>Please wait. Your video file will download automatically upon completion.</p>
         </div>
     </div>
 
     <script>
-        let currentNum = 0;
-        let startNum = 0;
-        let endNum = 100;
-        let delay = 100;
-        let timer = null;
-        let isPaused = false;
-        
-        const display = document.getElementById('counter-display');
-        const previewBox = document.getElementById('preview-box');
-        const imgLayer = document.getElementById('layer-img');
-        const btnPlay = document.getElementById('btn-play');
-        const btnPause = document.getElementById('btn-pause');
-        const btnReset = document.getElementById('btn-reset');
-        const btnExport = document.getElementById('btn-export');
-        const exportModal = document.getElementById('export-modal');
-        
-        const fontUpload = document.getElementById('font-upload');
-        const fontLabel = document.getElementById('font-label');
-        const imgUpload = document.getElementById('img-upload');
-        const imgLabel = document.getElementById('img-label');
-        const imgPos = document.getElementById('img-pos');
-        
-        const btnTmplExport = document.getElementById('btn-tmpl-export');
-        const tmplImport = document.getElementById('tmpl-import');
-
-        let mediaRecorder;
-        let recordedChunks = [];
-        let isRecording = false;
+        let currentNum = 0, startNum = 0, endNum = 100, delay = 100, timer = null, isPaused = false;
+        const display = document.getElementById('counter-display'), previewBox = document.getElementById('preview-box'), imgLayer = document.getElementById('layer-img');
+        const btnPlay = document.getElementById('btn-play'), btnPause = document.getElementById('btn-pause'), btnReset = document.getElementById('btn-reset'), btnExport = document.getElementById('btn-export'), exportModal = document.getElementById('export-modal');
+        const fontUpload = document.getElementById('font-upload'), fontLabel = document.getElementById('font-label'), imgUpload = document.getElementById('img-upload'), imgLabel = document.getElementById('img-label'), imgPos = document.getElementById('img-pos');
+        const btnTmplExport = document.getElementById('btn-tmpl-export'), tmplImport = document.getElementById('tmpl-import');
+        let mediaRecorder, recordedChunks = [], isRecording = false;
 
         function updateStyles() {
             display.style.fontSize = document.getElementById('font-size').value + 'px';
             display.style.color = document.getElementById('text-color').value;
             previewBox.style.backgroundColor = document.getElementById('bg-color').value;
-            
-            if(imgPos.value === 'top') {
-                previewBox.insertBefore(imgLayer, display);
-            } else {
-                previewBox.appendChild(imgLayer);
-            }
+            if(imgPos.value === 'top') { previewBox.insertBefore(imgLayer, display); } else { previewBox.appendChild(imgLayer); }
         }
 
         fontUpload.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 fontLabel.innerText = "✓ " + file.name;
-                const fontName = 'CustomFontV3';
-                const fontUrl = URL.createObjectURL(file);
-                const fontFace = new FontFace(fontName, `url(${fontUrl})`);
-                fontFace.load().then(function(loadedFace) {
-                    document.fonts.add(loadedFace);
-                    display.style.fontFamily = fontName;
-                }).catch(() => alert("Error processing font. Please ensure a valid font structure."));
+                const fontName = 'CustomFontV3', fontUrl = URL.createObjectURL(file), fontFace = new FontFace(fontName, `url(${fontUrl})`);
+                fontFace.load().then(function(loadedFace) { document.fonts.add(loadedFace); display.style.fontFamily = fontName; });
             }
         });
 
         imgUpload.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                if (file.size > 2 * 1024 * 1024) {
-                    alert("Image exceeds the maximum size limit of 2MB!");
-                    return;
-                }
+                if (file.size > 2 * 1024 * 1024) { alert("Max size 2MB!"); return; }
                 imgLabel.innerText = "✓ " + file.name;
                 const reader = new FileReader();
-                reader.onload = function(event) {
-                    imgLayer.src = event.target.result;
-                    imgLayer.style.display = 'block';
-                    updateStyles();
-                };
+                reader.onload = function(event) { imgLayer.src = event.target.result; imgLayer.style.display = 'block'; updateStyles(); };
                 reader.readAsDataURL(file);
             }
         });
@@ -264,144 +190,52 @@ html_content_english = """<!DOCTYPE html>
             startNum = parseInt(document.getElementById('start-num').value) || 0;
             endNum = parseInt(document.getElementById('end-num').value) || 0;
             delay = parseFloat(document.getElementById('delay-time').value) * 1000 || 100;
-            
-            if(!isPaused) {
-                currentNum = startNum;
-            }
+            if(!isPaused) { currentNum = startNum; }
             display.innerText = currentNum;
             updateStyles();
         }
 
         function runCounter() {
-            if (currentNum >= endNum) {
-                stopCounter();
-                if(isRecording) stopRecording();
-                return;
-            }
-            currentNum++;
-            display.innerText = currentNum;
-            
+            if (currentNum >= endNum) { stopCounter(); if(isRecording) stopRecording(); return; }
+            currentNum++; display.innerText = currentNum;
             const anim = document.getElementById('anim-style').value;
             display.className = "counter-text";
-            if(anim !== 'none') {
-                void display.offsetWidth;
-                display.classList.add('anim-' + anim);
-            }
+            if(anim !== 'none') { void display.offsetWidth; display.classList.add('anim-' + anim); }
             timer = setTimeout(runCounter, delay);
         }
 
-        function stopCounter() {
-            clearTimeout(timer);
-            btnPlay.disabled = false;
-            btnPause.disabled = true;
-        }
+        function stopCounter() { clearTimeout(timer); btnPlay.disabled = false; btnPause.disabled = true; }
 
-        btnPlay.addEventListener('click', () => {
-            initCounter();
-            btnPlay.disabled = true;
-            btnPause.disabled = false;
-            isPaused = false;
-            runCounter();
-        });
-
-        btnPause.addEventListener('click', () => {
-            clearTimeout(timer);
-            isPaused = true;
-            btnPlay.disabled = false;
-            btnPause.disabled = true;
-        });
-
-        btnReset.addEventListener('click', () => {
-            clearTimeout(timer);
-            isPaused = false;
-            initCounter();
-            btnPlay.disabled = false;
-            btnPause.disabled = true;
-            if(isRecording) stopRecording();
-        });
+        btnPlay.addEventListener('click', () => { initCounter(); btnPlay.disabled = true; btnPause.disabled = false; isPaused = false; runCounter(); });
+        btnPause.addEventListener('click', () => { clearTimeout(timer); isPaused = true; btnPlay.disabled = false; btnPause.disabled = true; });
+        btnReset.addEventListener('click', () => { clearTimeout(timer); isPaused = false; initCounter(); btnPlay.disabled = false; btnPause.disabled = true; if(isRecording) stopRecording(); });
 
         btnExport.addEventListener('click', async () => {
-            clearTimeout(timer);
-            isPaused = false;
-            initCounter();
-            
-            recordedChunks = [];
-            const stream = previewBox.captureStream(30); 
-            
+            clearTimeout(timer); isPaused = false; initCounter(); recordedChunks = [];
+            const stream = previewBox.captureStream(30);
             let options = { mimeType: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"' };
-            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                options = { mimeType: 'video/mp4' };
-            }
-            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                options = { mimeType: 'video/webm; codecs=vp9' };
-            }
-            
-            try {
-                mediaRecorder = new MediaRecorder(stream, options);
-            } catch (e) {
-                mediaRecorder = new MediaRecorder(stream);
-            }
-
-            mediaRecorder.ondataavailable = (e) => {
-                if (e.data.size > 0) recordedChunks.push(e.data);
-            };
-
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) { options = { mimeType: 'video/mp4' }; }
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) { options = { mimeType: 'video/webm; codecs=vp9' }; }
+            try { mediaRecorder = new MediaRecorder(stream, options); } catch (e) { mediaRecorder = new MediaRecorder(stream); }
+            mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
             mediaRecorder.onstop = () => {
-                const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `diamond_counter_hd_${Date.now()}.mp4`;
-                
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                exportModal.style.display = 'none';
-                isRecording = false;
-                alert("Success! Your HD MP4 video has been compiled and saved to your device files folder.");
+                const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType }), url = URL.createObjectURL(blob), a = document.createElement('a');
+                a.href = url; a.download = `counter_${Date.now()}.mp4`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+                exportModal.style.display = 'none'; isRecording = false;
             };
-
-            isRecording = true;
-            exportModal.style.display = 'flex';
-            mediaRecorder.start();
-            btnPlay.disabled = true;
-            btnPause.disabled = false;
-            runCounter();
+            isRecording = true; exportModal.style.display = 'flex'; mediaRecorder.start(); btnPlay.disabled = true; btnPause.disabled = false; runCounter();
         });
 
-        function stopRecording() {
-            if(mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-            }
-        }
+        function stopRecording() { if(mediaRecorder && mediaRecorder.state !== 'inactive') { mediaRecorder.stop(); } }
 
         btnTmplExport.addEventListener('click', () => {
-            const config = {
-                startNum: document.getElementById('start-num').value,
-                endNum: document.getElementById('end-num').value,
-                delayTime: document.getElementById('delay-time').value,
-                fontSize: document.getElementById('font-size').value,
-                animStyle: document.getElementById('anim-style').value,
-                imgPos: document.getElementById('img-pos').value,
-                textColor: document.getElementById('text-color').value,
-                bgColor: document.getElementById('bg-color').value
-            };
-            
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(config));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `counter_config_${config.startNum}_to_${config.endNum}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            document.body.removeChild(downloadAnchor);
+            const config = { startNum: document.getElementById('start-num').value, endNum: document.getElementById('end-num').value, delayTime: document.getElementById('delay-time').value, fontSize: document.getElementById('font-size').value, animStyle: document.getElementById('anim-style').value, imgPos: document.getElementById('img-pos').value, textColor: document.getElementById('text-color').value, bgColor: document.getElementById('bg-color').value };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(config)), downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr); downloadAnchor.setAttribute("download", `config.json`); document.body.appendChild(downloadAnchor); downloadAnchor.click(); downloadAnchor.removeChild(downloadAnchor);
         });
 
         tmplImport.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            
+            const file = e.target.files[0]; if (!file) return;
             const reader = new FileReader();
             reader.onload = function(event) {
                 try {
@@ -410,4 +244,16 @@ html_content_english = """<!DOCTYPE html>
                     if(config.endNum !== undefined) document.getElementById('end-num').value = config.endNum;
                     if(config.delayTime !== undefined) document.getElementById('delay-time').value = config.delayTime;
                     if(config.fontSize !== undefined) document.getElementById('font-size').value = config.fontSize;
-                    if(config.animStyle !== undefined) document.getElementById('anim-style').value = config.a
+                    if(config.animStyle !== undefined) document.getElementById('anim-style').value = config.animStyle;
+                    if(config.imgPos !== undefined) document.getElementById('img-pos').value = config.imgPos;
+                    if(config.textColor !== undefined) document.getElementById('text-color').value = config.textColor;
+                    if(config.bgColor !== undefined) document.getElementById('bg-color').value = config.bgColor;
+                    initCounter(); alert("Imported!");
+                } catch(err) { alert("Error!"); }
+            };
+            reader.readAsText(file);
+        });
+        initCounter();
+    </script>
+</body>
+</html>
